@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/stclaird/gin-bookstore/api"
 	"github.com/gin-gonic/gin"
+	"github.com/stclaird/gin-bookstore/api"
 )
 
 func main() {
@@ -11,11 +11,11 @@ func main() {
 	r := gin.Default()
 
 	// Routes
-	r.GET("/question", controllers.FindBooks)
-	r.GET("/question/:id", controllers.FindBook)
-	r.POST("/question", controllers.CreateBook)
-	r.PATCH("/question/:id", controllers.UpdateBook)
-	r.DELETE("/question/:id", controllers.DeleteBook)
+	r.GET("/question", api.FindBooks)
+	r.GET("/question/:id", api.FindBook)
+	r.POST("/question", api.CreateBook)
+	r.PATCH("/question/:id", api.UpdateBook)
+	r.DELETE("/question/:id", api.DeleteBook)
 
 	// Run the server
 	r.Run()
