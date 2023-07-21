@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/stclaird/quizzie/pkg/models"
+	"github.com/stclaird/go-quizzie/pkg/models"
 )
 
 // GET /question
