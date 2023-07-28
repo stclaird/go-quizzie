@@ -1,0 +1,118 @@
+{
+    "questions" : [
+        {
+            "id" : 1,
+            "text" : "Which of the following does Compute Engine do when you specify a Linux VM startup script?",
+            "type" : "multichoice",
+            "category" : "gcp",
+            "subcategory" : "gce",
+            "answers" : [
+                {
+                    "text" : "Copies the startup script to the VM",
+                    "answer" : true
+                },
+                {
+                    "text" : "Sets run permissions on the startup script",
+                    "answer" : true
+                },
+                {
+                    "text" : "Runs the startup script with the command sudo <script name>",
+                    "answer" : false
+                },
+                {
+                    "text" : "Runs the startup script as the root user when the VM boots",
+                    "answer" : true
+                }
+            ]
+        },
+        {
+            "id" : 2,
+            "text" : "Which of the following Metadata keys hold the location of a Linux VM startup script?",
+            "type" : "multichoice",
+            "category" : "gcp",
+            "subcategory" : "gce",
+            "answers" : [
+                {
+                    "text" : "startup-script-local",
+                    "answer" : false
+                },
+                {
+                    "text" : "startup-script",
+                    "answer" : true
+                },
+                {
+                    "text" : "startup-script-url",
+                    "answer" : true
+                }
+            ]
+        },
+        {
+            "id" : 3,
+            "text" : "Which are the following methods are valid ways to pass a startup script to a Linux VM instance?",
+            "type" : "multichoice",
+            "category" : "gcp",
+            "subcategory" : "gce",
+            "answers" : [
+                {
+                    "text" : "Inline via the Advanced Options Automation",
+                    "answer" : true
+                },
+                {
+                    "text" : "Pulled directly from GCP NFS Service",
+                    "answer" : false
+                },
+                {
+                    "text" : "Passed in as a local file",
+                    "answer" : true
+                },
+                {
+                    "text" : "Pulled in from a cloud storage bucket",
+                    "answer" : true
+                }
+            ]
+        },
+        {
+            "id" : 4,
+            "text" : "A linux VM startup script can only be run at first boot, true or false?",
+            "type" : "binary",
+            "category" : "gcp",
+            "subcategory" : "gce",
+            "answers" : [
+                {
+                    "text" : "TRUE",
+                    "answer" : false
+                },
+                {
+                    "text" : "FALSE",
+                    "answer" : true
+                }
+            ]
+        },
+        {
+            "id" : 5,
+            "text" : "Which of the following does Compute Engine do when you specify a Windows VM startup script?",
+            "type" : "multichoice",
+            "category" : "gcp",
+            "subcategory" : "gce",
+            "answers" : [
+                {
+                    "text" : "Copies the startup script to the VM",
+                    "answer" : true
+                },
+                {
+                    "text" : "Begins running when the PowerShell Service starts",
+                    "answer" : false
+                },
+                {
+                    "text" : "Administrator user runs the script during startup",
+                    "answer" : false
+                },
+                {
+                    "text" : "Task Scheduler runs the startup script as the LocalSystem account when the VM boots",
+                    "answer" : true
+                }
+            ]
+        }
+    ]
+   
+}

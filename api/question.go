@@ -7,6 +7,11 @@ import (
 	"github.com/stclaird/go-quizzie/pkg/models"
 )
 
+func Home(c *gin.Context) {
+	//Home Page
+	c.JSON(http.StatusOK, gin.H{"response": "home"})
+}
+
 // GET /question
 // Get all questions
 func FindQuestion(c *gin.Context) {
