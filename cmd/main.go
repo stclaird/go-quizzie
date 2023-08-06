@@ -10,12 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stclaird/go-quizzie/api"
 	"github.com/stclaird/go-quizzie/pkg/models"
-	"gorm.io/gorm"
+	mongo "github.com/stclaird/go-quizzie/pkg/models"
 )
 
-func initQuestions(db *gorm.DB) {
+func initQuestions() (questionsObj []models.Question) {
 	//import questions from a json file into database
-	var questionsObj []models.ImportQuestion
 
 	jsonFile, err := os.Open("questions.json")
 	if err != nil {
@@ -25,38 +24,35 @@ func initQuestions(db *gorm.DB) {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	json.Unmarshal(byteValue, &questionsObj)
 
-	for _, q := range questionsObj {
-		newQuestion := models.Question{
-			Text:        q.Text,
-			Type:        q.Type,
-			Category:    q.Category,
-			Subcategory: q.Subcategory,
-		}
-		insertedQ := models.DB.FirstOrCreate(&newQuestion, models.Question{Text: q.Text})
-
-		fmt.Println(insertedQ)
-		for _, a := range q.Answers {
-			newAnswer := models.Answer{
-				Text:       a.Text,
-				IsCorrect:  a.IsCorrect,
-				QuestionID: newQuestion.ID,
-			}
-			models.DB.FirstOrCreate(&newAnswer, models.Answer{Text: a.Text})
-		}
-	}
+	return questionsObj
 
 }
 
 func main() {
 
-	models.ConnectDatabase()
+	client, ctx, cancel, err := mongo.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
+    if err != nil {
+        panic(err)
+    }
 
-	initQuestions(models.DB)
+	defer mongo.Close(client, ctx, cancel)
+
+	questions := initQuestions()
+
+	for _, doc := range questions{
+		fmt.Println(doc)
+		result, err := mongo.InsertOne(client, ctx, "quizzie", "questions", doc)
+		if err != nil {
+			panic(err)
+		}
+		fmt.Println(result.InsertedID)
+
+	}
 
 	r := gin.Default()
 	// Routes
 	r.GET("/", api.Home)
-	r.GET("/question", api.FindQuestion)
+	r.GET("/questions", api.Questions)
 	// r.GET("/question/:id", api.FindBook)
 	// r.POST("/question", api.CreateBook)
 	// r.PATCH("/question/:id", api.UpdateBook)
