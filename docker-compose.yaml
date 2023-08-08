@@ -8,6 +8,8 @@ services:
     command: /project/cmd/go-quizzie
     ports:
             - 8080:8080
+    depends_on:
+      - mongo
   mongo:
     image: mongo
     restart: always

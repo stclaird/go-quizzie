@@ -6,23 +6,36 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stclaird/go-quizzie/api"
 	"github.com/stclaird/go-quizzie/pkg/models"
-	mongo "github.com/stclaird/go-quizzie/pkg/models"
+	mongomodel "github.com/stclaird/go-quizzie/pkg/models"
 )
 
 func initQuestions() (questionsObj []models.Question) {
 	//import questions from a json file into database
 
-	jsonFile, err := os.Open("questions.json")
+	files, err := ioutil.ReadDir("questions/")
 	if err != nil {
-		log.Println("Error", err)
+		log.Fatal(err)
 	}
-	defer jsonFile.Close()
-	byteValue, _ := ioutil.ReadAll(jsonFile)
-	json.Unmarshal(byteValue, &questionsObj)
+
+	for _, File := range files {
+		fileExtension := filepath.Ext(File.Name())
+		if fileExtension == ".json" {
+			filePath := fmt.Sprintf("questions/%s", File.Name())
+			jsonFile, err := os.Open(filePath)
+			if err != nil {
+				log.Println("Error", err)
+			}
+			defer jsonFile.Close()
+			byteValue, _ := ioutil.ReadAll(jsonFile)
+			json.Unmarshal(byteValue, &questionsObj)
+		}
+
+	}
 
 	return questionsObj
 
@@ -30,18 +43,18 @@ func initQuestions() (questionsObj []models.Question) {
 
 func main() {
 
-	client, ctx, cancel, err := mongo.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
-    if err != nil {
-        panic(err)
-    }
+	client, ctx, cancel, err := mongomodel.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
+	if err != nil {
+		panic(err)
+	}
 
-	defer mongo.Close(client, ctx, cancel)
+	defer mongomodel.Close(client, ctx, cancel)
 
 	questions := initQuestions()
 
-	for _, doc := range questions{
+	for _, doc := range questions {
 		fmt.Println(doc)
-		result, err := mongo.InsertOne(client, ctx, "quizzie", "questions", doc)
+		result, err := mongomodel.InsertOne(client, ctx, "quizzie", "questions", doc)
 		if err != nil {
 			panic(err)
 		}

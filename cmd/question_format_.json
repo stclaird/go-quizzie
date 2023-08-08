@@ -1,0 +1,16 @@
+{
+    "text" : "The Question text?",
+    "type" : "multichoice",
+    "category" : "gcp",
+    "subcategory" : "gce",
+    "answers" : [
+        {
+            "text" : "The correct answer",
+            "iscorrect" : true
+        },
+        {
+            "text" : "The wrong answer",
+            "iscorrect" : false
+        }
+    ]
+}
