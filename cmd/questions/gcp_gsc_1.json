@@ -50,7 +50,7 @@
                 "iscorrect" : true
             },
             { 
-                "text" : "If the bucket has data, then create a new bucket with the desired name, then copy the data from old bucket to the new one. When the data is migrated, finally delete the old bucket."
+                "text" : "If the bucket has data, then create a new bucket with the desired name, then migrate the data from old bucket to the new one. When the data is migrated, finally delete the old bucket."
             }
         ]
     }
