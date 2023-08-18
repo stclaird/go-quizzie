@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 )
 
 func InitQuestions() (allQuestions []Question) {
@@ -31,9 +32,13 @@ func InitQuestions() (allQuestions []Question) {
 			byteValue, _ := ioutil.ReadAll(jsonFile)
 			json.Unmarshal(byteValue, &questionsObj)
 			for _, question := range questionsObj {
+				for i := range question.Answers {
+					question.Answers[i].Id = strconv.Itoa(i)
+				}
 				allQuestions = append(allQuestions, question)
 			}
 		}
 	}
+
 	return allQuestions
 }

@@ -1,13 +1,13 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	mongo "github.com/stclaird/go-quizzie/pkg/models"
 	"go.mongodb.org/mongo-driver/bson"
 )
-
 
 func Home(c *gin.Context) {
 	//Home Page
@@ -17,39 +17,70 @@ func Home(c *gin.Context) {
 // GET /question
 // Get all questions
 func Questions(c *gin.Context) {
-
 	client, ctx, cancel, err := mongo.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 
 	defer mongo.Close(client, ctx, cancel)
-    var filter, option interface{}
-     
-    // filter  gets all document,
-    filter = bson.D{{}}
-     
-    //  option remove id field from all documents
-    option = bson.D{{"_id", 0}}
- 
-    // call the query method with client, context,
-    // database name, collection  name, filter and option
-    // This method returns momngo.cursor and error if any.
-    cursor, err := mongo.Query(client, ctx, "quizzie", "questions", filter, option)
-    // handle the errors.
-    if err != nil {
-        panic(err)
-    }
- 
-    var results []bson.D
-     
-    // to get bson object  from cursor,
-    // returns error if any.
-    if err := cursor.All(ctx, &results); err != nil {
-        // handle the error
-        panic(err)
-    }
+	var filter, option interface{}
+	filter = bson.D{{}}
+	option = bson.D{{"_id", 0}}
+	cursor, err := mongo.Query(client, ctx, "quizzie", "questions", filter, option)
+	if err != nil {
+		panic(err)
+	}
+
+	var results []bson.D
+	if err := cursor.All(ctx, &results); err != nil {
+		// handle the error
+		panic(err)
+	}
 
 	c.JSON(http.StatusOK, gin.H{"questions": results})
+}
 
+type CategorySubCategorys struct {
+	CategoryName string   `json:"Category"`
+	SubCategorys []string `json:"SubCategorys"`
+}
+
+func Categorys(c *gin.Context) {
+	client, ctx, cancel, err := mongo.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
+	if err != nil {
+		panic(err)
+	}
+
+	defer mongo.Close(client, ctx, cancel)
+	filter := bson.D{{}}
+	collection := client.Database("quizzie").Collection("questions")
+	categories, err := collection.Distinct(ctx, "category", filter)
+	if err != nil {
+		panic(err)
+	}
+
+	var catSubCats []CategorySubCategorys
+
+	var catfilter interface{}
+	for _, cat := range categories {
+		catStr := fmt.Sprintf("%v", cat)
+		catfilter = bson.M{"category": catStr}
+		subCatsResp, err := collection.Distinct(ctx, "subcategory", catfilter)
+		if err != nil {
+			panic(err)
+		}
+
+		var subCatsStr []string
+		for _, x := range subCatsResp {
+			subCatsStr = append(subCatsStr, fmt.Sprintf("%v", x))
+		}
+
+		catSubCat := CategorySubCategorys{
+			CategoryName: catStr,
+			SubCategorys: subCatsStr,
+		}
+		catSubCats = append(catSubCats, catSubCat)
+	}
+
+	c.JSON(http.StatusOK, &catSubCats)
 }

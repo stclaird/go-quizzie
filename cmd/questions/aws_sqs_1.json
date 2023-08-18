@@ -1,0 +1,69 @@
+[
+    {
+        "text" : "What is the purpose of the Visibility Timeout?",
+        "type" : "multichoice",
+        "category" : "aws",
+        "subcategory" : "sqs",
+        "dateadded" : "30-Apr-2018",
+        "enabled" : "true",
+        "answers" : [
+            {
+                "text" : "After a consumer begins processing a message the message becomes invisible to other consumers.  The visibility timeout is the length of time the message stays hidden from other consumers.",
+                "iscorrect" : true
+            },
+            {
+                "text" : "The timeout is the length of time the message stays in the queue before deletion.",
+                "iscorrect" : false
+            }
+        ]
+    },
+    {
+        "text" : "What is the maximum message visibility?",
+        "type" : "multichoice",
+        "category" : "aws",
+        "subcategory" : "sqs",
+        "dateadded" : "30-Apr-2018",
+        "enabled" : "true",
+        "answers" : [
+            {
+                "text" : "12 Hours",
+                "iscorrect" : true
+            },
+            {
+                "text" : "48 Hours",
+                "iscorrect" : false
+            },
+            {
+                "text" : "60 Seconds",
+                "iscorrect" : false
+            }
+        ]
+    },
+    {
+        "text" : "What is the default message retention period?",
+        "type" : "multichoice",
+        "category" : "aws",
+        "subcategory" : "sqs",
+        "dateadded" : "30-Apr-2018",
+        "enabled" : "true",
+        "answers" : [
+            {
+                "text" : "15 Minutes",
+                "iscorrect" : false
+            },
+            {
+                "text" : "4 Days",
+                "iscorrect" : true
+            },
+            {
+                "text" : "7 Days",
+                "iscorrect" : false
+            },
+            {
+                "text" : "3 Hours",
+                "iscorrect" : false
+            }
+        ]
+    }
+]
+

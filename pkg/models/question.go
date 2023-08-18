@@ -13,7 +13,9 @@ type Question struct {
 	Type        string `json:"type"`
 	Category    string `json:"category"`
 	Subcategory string `json:"subcategory"`
+	DateAdded   string
 	Answers     []struct {
+		Id        string
 		Text      string `json:"text"`
 		IsCorrect bool   `json:"iscorrect"`
 	} `json:"answers"`

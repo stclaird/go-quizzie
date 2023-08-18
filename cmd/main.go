@@ -23,7 +23,7 @@ func main() {
 	if err = qCollection.Drop(ctx); err != nil {
 		log.Fatal(err)
 	}
-
+	// Import questions from JSON files
 	questions := mongomodel.InitQuestions()
 
 	for _, doc := range questions {
@@ -38,7 +38,7 @@ func main() {
 	r.GET("/", api.Home)
 	r.GET("/questions", api.Questions)
 	r.GET("/categorys/", api.Categorys)
-	r.GET("/category/:category", api.Category)
+	// r.GET("/category/:category", api.Category)
 
 	// Run the server
 	r.Run()
