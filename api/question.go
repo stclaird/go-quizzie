@@ -22,10 +22,18 @@ func Questions(c *gin.Context) {
 		panic(err)
 	}
 
-	defer mongo.Close(client, ctx, cancel)
 	var filter, option interface{}
-	filter = bson.D{{}}
 	option = bson.D{{"_id", 0}}
+
+	subcategory := c.Param("subcategory")
+	if subcategory == "" {
+		filter = bson.M{"subcategory": subcategory}
+	} else {
+		filter = bson.D{{}}
+	}
+
+	defer mongo.Close(client, ctx, cancel)
+
 	cursor, err := mongo.Query(client, ctx, "quizzie", "questions", filter, option)
 	if err != nil {
 		panic(err)

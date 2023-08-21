@@ -37,8 +37,8 @@ func main() {
 	// Routes
 	r.GET("/", api.Home)
 	r.GET("/questions", api.Questions)
+	r.GET("/questions/:subcategory", api.Questions)
 	r.GET("/categorys/", api.Categorys)
-	// r.GET("/category/:category", api.Category)
 
 	// Run the server
 	r.Run()
