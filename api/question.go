@@ -26,7 +26,7 @@ func Questions(c *gin.Context) {
 	option = bson.D{{"_id", 0}}
 
 	subcategory := c.Param("subcategory")
-	if subcategory == "" {
+	if subcategory != "" {
 		filter = bson.M{"subcategory": subcategory}
 	} else {
 		filter = bson.D{{}}
