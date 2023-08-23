@@ -9,6 +9,17 @@ import (
 	mongomodel "github.com/stclaird/go-quizzie/pkg/models"
 )
 
+func setupRouter() *gin.Engine {
+	r := gin.Default()
+
+	// Routes
+	r.GET("/", api.Home)
+	r.GET("/questions", api.Questions)
+	r.GET("/questions/:subcategory", api.Questions)
+	r.GET("/categorys/", api.Categorys)
+	return r
+}
+
 func main() {
 
 	client, ctx, cancel, err := mongomodel.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
@@ -33,14 +44,8 @@ func main() {
 		}
 	}
 
-	r := gin.Default()
-	// Routes
-	r.GET("/", api.Home)
-	r.GET("/questions", api.Questions)
-	r.GET("/questions/:subcategory", api.Questions)
-	r.GET("/categorys/", api.Categorys)
-
 	// Run the server
+	r := setupRouter()
 	r.Run()
 
 }
