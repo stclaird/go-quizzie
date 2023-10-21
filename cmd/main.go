@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stclaird/go-quizzie/api"
-	mongomodel "github.com/stclaird/go-quizzie/pkg/models"
+	model "github.com/stclaird/go-quizzie/pkg/models"
 )
 
 func setupRouter() *gin.Engine {
@@ -15,34 +15,30 @@ func setupRouter() *gin.Engine {
 	// Routes
 	r.GET("/", api.Home)
 	r.GET("/questions", api.Questions)
-	r.GET("/questions/:subcategory", api.Questions)
-	r.GET("/categorys/", api.Categorys)
+	// r.GET("/questions/:subcategory", api.Questions)
+	r.GET("/categories/", api.Categories)
+	// r.POST("/answer", api.Answers)
 	return r
 }
 
 func main() {
 
-	client, ctx, cancel, err := mongomodel.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
-	if err != nil {
-		panic(err)
-	}
-
-	defer mongomodel.Close(client, ctx, cancel)
-
-	db := client.Database("quizzie")
-	qCollection := db.Collection("questions")
-	if err = qCollection.Drop(ctx); err != nil {
-		log.Fatal(err)
-	}
 	// Import questions from JSON files
-	questions := mongomodel.InitQuestions()
+	questions := model.InitQuestions()
 
-	for _, doc := range questions {
-		_, err := mongomodel.InsertOne(client, ctx, "quizzie", "questions", doc)
+	db,err := model.Open("./badger-quizzie")
+	if err != nil {
+		log.Printf("main %s", err)
+	}
+
+	for _, question := range questions {
+		err := model.InsertOne(question, db)
 		if err != nil {
 			fmt.Println(err)
 		}
 	}
+
+	model.Close(db)
 
 	// Run the server
 	r := setupRouter()

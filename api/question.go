@@ -2,93 +2,113 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	mongo "github.com/stclaird/go-quizzie/pkg/models"
-	"go.mongodb.org/mongo-driver/bson"
+	model "github.com/stclaird/go-quizzie/pkg/models"
 )
+
+
+type Answer struct {
+	Qid string
+	Answer string
+}
+
+func contains(s []model.CategorySubCategorys, e model.CategorySubCategorys) (bool, int) {
+    for k, v := range s {
+        if v.CategoryName == e.CategoryName {
+            return true, k
+        }
+    }
+    return false, -1
+}
+
 
 func Home(c *gin.Context) {
 	//Home Page
 	c.JSON(http.StatusOK, gin.H{"response": "home"})
 }
 
-// GET /question
-// Get all questions
+//Retrieve Questions from particualr category
 func Questions(c *gin.Context) {
-	client, ctx, cancel, err := mongo.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
+	db,err := model.Open("./badger-quizzie")
 	if err != nil {
-		panic(err)
+		log.Printf("func Questions %s", err)
 	}
+	var results []model.Question
 
-	var filter, option interface{}
-	option = bson.D{{"_id", 0}}
-
-	subcategory := c.Param("subcategory")
-	if subcategory != "" {
-		filter = bson.M{"subcategory": subcategory}
-	} else {
-		filter = bson.D{{}}
-	}
-
-	defer mongo.Close(client, ctx, cancel)
-
-	cursor, err := mongo.Query(client, ctx, "quizzie", "questions", filter, option)
+	results, err = model.GetQuestionsByCat("gcp-gce", db)
+	model.Close(db)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
-
-	var results []bson.D
-	if err := cursor.All(ctx, &results); err != nil {
-		// handle the error
-		panic(err)
-	}
-
-	c.JSON(http.StatusOK, gin.H{"questions": results})
+	c.JSON(http.StatusOK, results)
 }
 
-type CategorySubCategorys struct {
-	CategoryName string   `json:"Category"`
-	SubCategorys []string `json:"SubCategorys"`
+//Retrieve Categories
+func Categories(c *gin.Context) {
+	db,err := model.Open("./badger-quizzie")
+	if err != nil {
+		log.Printf("func Questions %s\n", err)
+	}
+	var catSubCategories []model.CategorySubCategorys
+
+	All, _ := model.GetAllQuestions(db)
+	model.Close(db)
+
+	for _, v := range All {
+		var catSubCat model.CategorySubCategorys
+		var subCategory model.Subcategory
+		subCategory.SubCategoryName = v.Subcategory
+		subCategory.URLPrefix = fmt.Sprintf("%s-%s", v.Category, v.Subcategory)
+
+		catSubCat.CategoryName = v.Category
+
+		exists, idx := contains(catSubCategories, catSubCat)
+		if  exists {
+			catSubCategories[idx].SubCategorys = append(catSubCategories[idx].SubCategorys, subCategory )
+			break
+		} else {
+			catSubCat.SubCategorys = append(catSubCat.SubCategorys,subCategory)
+		}
+		catSubCategories = append(catSubCategories, catSubCat)
+	}
+
+	c.JSON(http.StatusOK, &catSubCategories)
 }
 
-func Categorys(c *gin.Context) {
-	client, ctx, cancel, err := mongo.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
-	if err != nil {
-		panic(err)
-	}
 
-	defer mongo.Close(client, ctx, cancel)
-	filter := bson.D{{}}
-	collection := client.Database("quizzie").Collection("questions")
-	categories, err := collection.Distinct(ctx, "category", filter)
-	if err != nil {
-		panic(err)
-	}
+//Retrieve Answer to Question
+// func Answers(c *gin.Context) {
+// 	client, ctx, cancel, err := mongo.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	var catSubCats []CategorySubCategorys
+// 	defer mongo.Close(client, ctx, cancel)
 
-	var catfilter interface{}
-	for _, cat := range categories {
-		catStr := fmt.Sprintf("%v", cat)
-		catfilter = bson.M{"category": catStr}
-		subCatsResp, err := collection.Distinct(ctx, "subcategory", catfilter)
-		if err != nil {
-			panic(err)
-		}
+// 	var req Answer
+// 	c.BindJSON(&req)
+// 	fmt.Println("Posted", req)
 
-		var subCatsStr []string
-		for _, x := range subCatsResp {
-			subCatsStr = append(subCatsStr, fmt.Sprintf("%v", x))
-		}
+// 	var filter, option interface{}
+// 	option = bson.D{
+// 		{"_id", 0},
+// 	}
 
-		catSubCat := CategorySubCategorys{
-			CategoryName: catStr,
-			SubCategorys: subCatsStr,
-		}
-		catSubCats = append(catSubCats, catSubCat)
-	}
+// 	cursor, err := mongo.Query(client, ctx, "quizzie", "questions", filter, option)
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	c.JSON(http.StatusOK, &catSubCats)
-}
+// 	var question mongo.Question
+
+// 	if err := cursor.All(ctx, &question); err != nil {
+// 		// handle the error
+// 		panic(err)
+// 	}
+
+// 	c.JSON(200, req)
+
+// }

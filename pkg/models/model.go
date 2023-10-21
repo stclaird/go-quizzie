@@ -1,6 +1,8 @@
 package models
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -9,6 +11,35 @@ import (
 	"path/filepath"
 	"strconv"
 )
+
+type Question struct {
+	Qid			string `json:"qid"`
+	Text        string `json:"text"`
+	Type        string `json:"type"`
+	Category    string `json:"category"`
+	Subcategory string `json:"subcategory"`
+	DateAdded   string
+	Answers     []struct {
+		Id        string
+		Text      string `json:"text"`
+		IsCorrect bool   `json:"iscorrect"`
+	} `json:"answers"`
+}
+
+type CategorySubCategorys struct {
+	CategoryName string   `json:"Category"`
+	SubCategorys []Subcategory `json:"SubCategorys"`
+}
+
+type Subcategory struct {
+	SubCategoryName string `json:"SubCategoryName"`
+	URLPrefix string `json:"URLPrefix"`
+}
+
+// type CategorySubCategorys struct {
+// 	CategoryName string   `json:"Category"`
+// 	SubCategorys []string `json:"SubCategorys"`
+// }
 
 func InitQuestions() (allQuestions []Question) {
 	//import questions from a json file into database
@@ -32,6 +63,7 @@ func InitQuestions() (allQuestions []Question) {
 			byteValue, _ := ioutil.ReadAll(jsonFile)
 			json.Unmarshal(byteValue, &questionsObj)
 			for _, question := range questionsObj {
+				question.Qid = createQid()
 				for i := range question.Answers {
 					question.Answers[i].Id = strconv.Itoa(i)
 				}
@@ -41,4 +73,10 @@ func InitQuestions() (allQuestions []Question) {
 	}
 
 	return allQuestions
+}
+
+func createQid() string{
+	b := make([]byte, 4)
+	rand.Read(b)
+	return hex.EncodeToString(b)
 }
