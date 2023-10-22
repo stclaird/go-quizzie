@@ -36,13 +36,15 @@ type Subcategory struct {
 	URLPrefix string `json:"URLPrefix"`
 }
 
-// type CategorySubCategorys struct {
-// 	CategoryName string   `json:"Category"`
-// 	SubCategorys []string `json:"SubCategorys"`
-// }
+func createQid(question Question) string{
+	b := make([]byte, 4)
+	rand.Read(b)
+	return fmt.Sprintf("%s-%s-%s", question.Category, question.Subcategory, hex.EncodeToString(b))
+}
 
 func InitQuestions() (allQuestions []Question) {
 	//import questions from a json file into database
+	//returns a slice of question stuct types
 
 	files, err := ioutil.ReadDir("questions/")
 	if err != nil {
@@ -63,7 +65,7 @@ func InitQuestions() (allQuestions []Question) {
 			byteValue, _ := ioutil.ReadAll(jsonFile)
 			json.Unmarshal(byteValue, &questionsObj)
 			for _, question := range questionsObj {
-				question.Qid = createQid()
+				question.Qid = createQid(question)
 				for i := range question.Answers {
 					question.Answers[i].Id = strconv.Itoa(i)
 				}
@@ -75,8 +77,3 @@ func InitQuestions() (allQuestions []Question) {
 	return allQuestions
 }
 
-func createQid() string{
-	b := make([]byte, 4)
-	rand.Read(b)
-	return hex.EncodeToString(b)
-}

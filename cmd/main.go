@@ -15,24 +15,22 @@ func setupRouter() *gin.Engine {
 	// Routes
 	r.GET("/", api.Home)
 	r.GET("/questions", api.Questions)
-	// r.GET("/questions/:subcategory", api.Questions)
+	r.GET("/questions/:prefix", api.Questions)
 	r.GET("/categories/", api.Categories)
 	// r.POST("/answer", api.Answers)
 	return r
 }
 
 func main() {
-
-	// Import questions from JSON files
+	// Import questions
 	questions := model.InitQuestions()
-
 	db,err := model.Open("./badger-quizzie")
 	if err != nil {
 		log.Printf("main %s", err)
 	}
 
 	for _, question := range questions {
-		err := model.InsertOne(question, db)
+		err := model.InsertOneItem(question, db)
 		if err != nil {
 			fmt.Println(err)
 		}
@@ -43,5 +41,4 @@ func main() {
 	// Run the server
 	r := setupRouter()
 	r.Run()
-
 }

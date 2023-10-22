@@ -22,15 +22,10 @@ func Close(db *badger.DB ) {
 	defer db.Close()
 }
 
-func CreateKeyStr( question Question) (keyStr string) {
-	keyStr = fmt.Sprintf("%s-%s", question.Category, question.Subcategory )
-	return keyStr
-}
-
-func InsertOne(question Question, db *badger.DB) (err error) {
+func InsertOneItem(question Question, db *badger.DB) (err error) {
 	//Insert a Question
 
-	keyStr := CreateKeyStr(question)
+	keyStr := createQid(question)
 
 	var b bytes.Buffer
     e := gob.NewEncoder(&b)
@@ -51,7 +46,8 @@ func InsertOne(question Question, db *badger.DB) (err error) {
 	return err
 }
 
-func GetAllQuestions(db *badger.DB) ([]Question, error) {
+//retrieve all items in the database
+func GetAllItems(db *badger.DB) ([]Question, error) {
   var questions []Question
   err := db.View(func(txn *badger.Txn) error {
       opts := badger.DefaultIteratorOptions
@@ -79,7 +75,8 @@ func GetAllQuestions(db *badger.DB) ([]Question, error) {
       return questions, err
 }
 
-func GetQuestionsByCat(prefix string, db *badger.DB) ([]Question, error) {
+//retrieve the questions with a key prefix starting with <prefix>
+func GetItemsbyPrefix(prefix string, db *badger.DB) ([]Question, error) {
 	var questions []Question
 
   err :=  db.View(func(txn *badger.Txn) error {

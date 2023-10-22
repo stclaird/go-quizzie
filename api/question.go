@@ -9,7 +9,6 @@ import (
 	model "github.com/stclaird/go-quizzie/pkg/models"
 )
 
-
 type Answer struct {
 	Qid string
 	Answer string
@@ -24,21 +23,23 @@ func contains(s []model.CategorySubCategorys, e model.CategorySubCategorys) (boo
     return false, -1
 }
 
-
 func Home(c *gin.Context) {
 	//Home Page
 	c.JSON(http.StatusOK, gin.H{"response": "home"})
 }
 
-//Retrieve Questions from particualr category
+//Retrieve Questions from specific category "prefix"
 func Questions(c *gin.Context) {
+
+	prefix := c.Param("prefix")
+
 	db,err := model.Open("./badger-quizzie")
 	if err != nil {
 		log.Printf("func Questions %s", err)
 	}
 	var results []model.Question
 
-	results, err = model.GetQuestionsByCat("gcp-gce", db)
+	results, err = model.GetItemsbyPrefix(prefix, db)
 	model.Close(db)
 	if err != nil {
 		log.Println(err)
@@ -54,7 +55,7 @@ func Categories(c *gin.Context) {
 	}
 	var catSubCategories []model.CategorySubCategorys
 
-	All, _ := model.GetAllQuestions(db)
+	All, _ := model.GetAllItems(db)
 	model.Close(db)
 
 	for _, v := range All {
