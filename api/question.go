@@ -28,26 +28,6 @@ func Home(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"response": "home"})
 }
 
-//Retrieve Questions from specific category "prefix"
-func Questions(c *gin.Context) {
-
-	prefix := c.Param("prefix")
-
-	db,err := model.Open("./badger-quizzie")
-	if err != nil {
-		log.Printf("func Questions %s", err)
-	}
-	var results []model.Question
-
-	results, err = model.GetItemsbyPrefix(prefix, db)
-	model.Close(db)
-	if err != nil {
-		log.Println(err)
-	}
-	c.JSON(http.StatusOK, results)
-}
-
-//Retrieve Categories
 func Categories(c *gin.Context) {
 	db,err := model.Open("./badger-quizzie")
 	if err != nil {
@@ -79,37 +59,20 @@ func Categories(c *gin.Context) {
 	c.JSON(http.StatusOK, &catSubCategories)
 }
 
+//Retrieve Questions from specific category "prefix"
+func Questions(c *gin.Context) {
+	prefix := c.Param("prefix")
+	db,err := model.Open("./badger-quizzie")
+	if err != nil {
+		log.Printf("func Questions %s", err)
+	}
 
-//Retrieve Answer to Question
-// func Answers(c *gin.Context) {
-// 	client, ctx, cancel, err := mongo.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
-// 	if err != nil {
-// 		panic(err)
-// 	}
+	var response []model.QuestionNoAnswer
+	response, err = model.GetItemsbyPrefix(prefix, db)
 
-// 	defer mongo.Close(client, ctx, cancel)
-
-// 	var req Answer
-// 	c.BindJSON(&req)
-// 	fmt.Println("Posted", req)
-
-// 	var filter, option interface{}
-// 	option = bson.D{
-// 		{"_id", 0},
-// 	}
-
-// 	cursor, err := mongo.Query(client, ctx, "quizzie", "questions", filter, option)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	var question mongo.Question
-
-// 	if err := cursor.All(ctx, &question); err != nil {
-// 		// handle the error
-// 		panic(err)
-// 	}
-
-// 	c.JSON(200, req)
-
-// }
+	model.Close(db)
+	if err != nil {
+		log.Println(err)
+	}
+	c.JSON(http.StatusOK, response)
+}

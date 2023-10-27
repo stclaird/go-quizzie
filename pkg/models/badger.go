@@ -25,7 +25,7 @@ func Close(db *badger.DB ) {
 func InsertOneItem(question Question, db *badger.DB) (err error) {
 	//Insert a Question
 
-	keyStr := createQid(question)
+	keyStr := question.Qid
 
 	var b bytes.Buffer
     e := gob.NewEncoder(&b)
@@ -62,7 +62,6 @@ func GetAllItems(db *badger.DB) ([]Question, error) {
         if err := d.Decode(&questionDecode); err != nil {
           panic(err)
         }
-  //      log.Printf("Decoded Struct from badger : name [%s] age [%s]\n", questionDecode.Text, questionDecode.Type)
         questions = append(questions, questionDecode)
         return nil
         })
@@ -76,8 +75,8 @@ func GetAllItems(db *badger.DB) ([]Question, error) {
 }
 
 //retrieve the questions with a key prefix starting with <prefix>
-func GetItemsbyPrefix(prefix string, db *badger.DB) ([]Question, error) {
-	var questions []Question
+func GetItemsbyPrefix(prefix string, db *badger.DB) ([]QuestionNoAnswer, error) {
+	var questions []QuestionNoAnswer
 
   err :=  db.View(func(txn *badger.Txn) error {
       it := txn.NewIterator(badger.DefaultIteratorOptions)
@@ -86,7 +85,7 @@ func GetItemsbyPrefix(prefix string, db *badger.DB) ([]Question, error) {
       for it.Seek(prefix); it.ValidForPrefix(prefix); it.Next() {
         item := it.Item()
         err := item.Value(func(v []byte) error {
-          var questionDecode Question
+          var questionDecode QuestionNoAnswer
           d := gob.NewDecoder(bytes.NewReader(v))
           if err := d.Decode(&questionDecode); err != nil {
             panic(err)
@@ -101,4 +100,29 @@ func GetItemsbyPrefix(prefix string, db *badger.DB) ([]Question, error) {
       return nil
     })
     return questions, err
+}
+
+func GetItem(itemKey string, db *badger.DB) ( Question, error){
+  var question Question
+  err :=  db.View(func(txn *badger.Txn) error {
+    prefix := []byte(itemKey)
+    item, err := txn.Get(prefix)
+    if err != nil {
+      return fmt.Errorf("getting value: %w", err)
+     }
+
+     valCopy, err := item.ValueCopy(nil)
+     if err != nil {
+      return fmt.Errorf("copying value: %w", err)
+     }
+
+     d := gob.NewDecoder(bytes.NewReader(valCopy))
+     if err := d.Decode(&question); err != nil {
+       panic(err)
+     }
+
+    return nil
+  })
+
+  return question, err
 }

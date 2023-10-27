@@ -1,8 +1,6 @@
 package models
 
 import (
-	"crypto/rand"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -26,6 +24,19 @@ type Question struct {
 	} `json:"answers"`
 }
 
+type QuestionNoAnswer struct {
+	Qid			string `json:"qid"`
+	Text        string `json:"text"`
+	Type        string `json:"type"`
+	Category    string `json:"category"`
+	Subcategory string `json:"subcategory"`
+	DateAdded   string
+	Answers     []struct {
+		Id        string
+		Text      string `json:"text"`
+	} `json:"answers"`
+}
+
 type CategorySubCategorys struct {
 	CategoryName string   `json:"Category"`
 	SubCategorys []Subcategory `json:"SubCategorys"`
@@ -36,10 +47,16 @@ type Subcategory struct {
 	URLPrefix string `json:"URLPrefix"`
 }
 
-func createQid(question Question) string{
-	b := make([]byte, 4)
-	rand.Read(b)
-	return fmt.Sprintf("%s-%s-%s", question.Category, question.Subcategory, hex.EncodeToString(b))
+type AnswerResponse struct {
+	IsCorrect bool
+	ActualAnswer []string
+}
+
+func createQid(question Question, k int) string{
+	// b := make([]byte, 4)
+	// rand.Read(b)
+//	return fmt.Sprintf("%s-%s-%s", question.Category, question.Subcategory, hex.EncodeToString(b))
+	return fmt.Sprintf("%s-%s-%s", question.Category, question.Subcategory, strconv.Itoa(k))
 }
 
 func InitQuestions() (allQuestions []Question) {
@@ -64,8 +81,8 @@ func InitQuestions() (allQuestions []Question) {
 			defer jsonFile.Close()
 			byteValue, _ := ioutil.ReadAll(jsonFile)
 			json.Unmarshal(byteValue, &questionsObj)
-			for _, question := range questionsObj {
-				question.Qid = createQid(question)
+			for k, question := range questionsObj {
+				question.Qid = createQid(question,k)
 				for i := range question.Answers {
 					question.Answers[i].Id = strconv.Itoa(i)
 				}

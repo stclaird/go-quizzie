@@ -17,7 +17,7 @@ func setupRouter() *gin.Engine {
 	r.GET("/questions", api.Questions)
 	r.GET("/questions/:prefix", api.Questions)
 	r.GET("/categories/", api.Categories)
-	// r.POST("/answer", api.Answers)
+	r.GET("/answer/:qid/:answer", api.Answers)
 	return r
 }
 
