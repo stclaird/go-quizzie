@@ -46,10 +46,10 @@
                 "iscorrect" : false
             },
             {
-                "text" : "If the bucket is empty, simply delete the bucket and create a new one with you desired name",
+                "text" : "If the bucket is empty, simply delete the bucket and create a new one with your desired name",
                 "iscorrect" : true
             },
-            { 
+            {
                 "text" : "If the old bucket has data, firstly create a new bucket with the desired name, next migrate the data from old bucket to the new one. When the data is migrated, finally delete the old bucket.",
                 "iscorrect" : true
             }

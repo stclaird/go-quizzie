@@ -34,6 +34,8 @@ func InsertOneItem(question Question, db *badger.DB) (err error) {
       log.Println(err)
 	  return err
     }
+    defer db.Close()
+
     err = db.Update(func(txn *badger.Txn) error {
       err := txn.Set([]byte(keyStr), b.Bytes())
       return err
@@ -49,6 +51,8 @@ func InsertOneItem(question Question, db *badger.DB) (err error) {
 //retrieve all items in the database
 func GetAllItems(db *badger.DB) ([]Question, error) {
   var questions []Question
+  defer db.Close()
+
   err := db.View(func(txn *badger.Txn) error {
       opts := badger.DefaultIteratorOptions
       opts.PrefetchSize = 10
@@ -77,6 +81,7 @@ func GetAllItems(db *badger.DB) ([]Question, error) {
 //retrieve the questions with a key prefix starting with <prefix>
 func GetItemsbyPrefix(prefix string, db *badger.DB) ([]QuestionNoAnswer, error) {
 	var questions []QuestionNoAnswer
+  defer db.Close()
 
   err :=  db.View(func(txn *badger.Txn) error {
       it := txn.NewIterator(badger.DefaultIteratorOptions)
@@ -104,6 +109,8 @@ func GetItemsbyPrefix(prefix string, db *badger.DB) ([]QuestionNoAnswer, error) 
 
 func GetItem(itemKey string, db *badger.DB) ( Question, error){
   var question Question
+  defer db.Close()
+
   err :=  db.View(func(txn *badger.Txn) error {
     prefix := []byte(itemKey)
     item, err := txn.Get(prefix)

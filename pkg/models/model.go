@@ -37,9 +37,10 @@ type QuestionNoAnswer struct {
 	} `json:"answers"`
 }
 
-type CategorySubCategorys struct {
+type Category struct {
+	Id string	`json:"id"`
 	CategoryName string   `json:"Category"`
-	SubCategorys []Subcategory `json:"SubCategorys"`
+	SubCategories []Subcategory `json:"SubCategories"`
 }
 
 type Subcategory struct {
@@ -53,9 +54,7 @@ type AnswerResponse struct {
 }
 
 func createQid(question Question, k int) string{
-	// b := make([]byte, 4)
-	// rand.Read(b)
-//	return fmt.Sprintf("%s-%s-%s", question.Category, question.Subcategory, hex.EncodeToString(b))
+	//Create qid (question ID)
 	return fmt.Sprintf("%s-%s-%s", question.Category, question.Subcategory, strconv.Itoa(k))
 }
 
