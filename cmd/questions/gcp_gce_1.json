@@ -11,7 +11,7 @@
                 },
                 {
                     "text" : "The default time zone of all VM Instances regardless of region is CST",
-                    "iscorrect" : true
+                    "iscorrect" : false
                 },
                 {
                     "text" : "The default time zone of your VM instances match that of the region it is running in",

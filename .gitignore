@@ -21,3 +21,10 @@
 go.work
 
 .DS_Store
+
+# badger
+*.vlog
+*.SST
+DISCARD
+KEYREGISTRY
+MANIFEST

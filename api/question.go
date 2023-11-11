@@ -2,11 +2,13 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
-	mongo "github.com/stclaird/go-quizzie/pkg/models"
-	"go.mongodb.org/mongo-driver/bson"
+	model "github.com/stclaird/go-quizzie/pkg/models"
 )
 
 func Home(c *gin.Context) {
@@ -14,81 +16,64 @@ func Home(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"response": "home"})
 }
 
-// GET /question
-// Get all questions
+func Categories(c *gin.Context) {
+	db,err := model.Open("./badger-db")
+	if err != nil {
+		log.Printf("func Questions %s\n", err)
+	}
+
+	All, _ := model.GetAllItems(db)
+
+
+	Categories := make(map[string]*model.Category)
+	subCategories := make(map[string]model.Subcategory)
+
+	//Populate a map of all Categories and a second map of all subcategories
+	for k, v := range All {
+		var category model.Category
+		category.Id = strconv.Itoa(k)
+		category.CategoryName = v.Category
+		Categories[ v.Category] = &category
+
+		var subCategory model.Subcategory
+		subCategory.SubCategoryName = v.Subcategory
+		subCategory.URLPrefix = fmt.Sprintf("%s-%s", v.Category, v.Subcategory)
+		subCategories[subCategory.URLPrefix] = subCategory
+
+	}
+	//Apply all subcategories to appropriate category
+	for _,v := range subCategories {
+		splt := strings.Split(v.URLPrefix, "-")
+		cat := splt[0]
+		for _, value := range Categories {
+			if value.CategoryName == cat {
+				Categories[cat].SubCategories = append(Categories[cat].SubCategories, v)
+			}
+		}
+	}
+
+	var response []*model.Category
+	for _,v := range Categories {
+		response = append(response, v)
+	}
+
+	c.JSON(http.StatusOK, &response)
+}
+
+//Retrieve Questions from specific category "prefix"
 func Questions(c *gin.Context) {
-	client, ctx, cancel, err := mongo.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
+	prefix := c.Param("prefix")
+	db,err := model.Open("./badger-db")
 	if err != nil {
-		panic(err)
+		log.Printf("func Questions %s", err)
 	}
 
-	var filter, option interface{}
-	option = bson.D{{"_id", 0}}
+	var response []model.QuestionNoAnswer
+	response, err = model.GetItemsbyPrefix(prefix, db)
 
-	subcategory := c.Param("subcategory")
-	if subcategory != "" {
-		filter = bson.M{"subcategory": subcategory}
-	} else {
-		filter = bson.D{{}}
-	}
 
-	defer mongo.Close(client, ctx, cancel)
-
-	cursor, err := mongo.Query(client, ctx, "quizzie", "questions", filter, option)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
-
-	var results []bson.D
-	if err := cursor.All(ctx, &results); err != nil {
-		// handle the error
-		panic(err)
-	}
-
-	c.JSON(http.StatusOK, gin.H{"questions": results})
-}
-
-type CategorySubCategorys struct {
-	CategoryName string   `json:"Category"`
-	SubCategorys []string `json:"SubCategorys"`
-}
-
-func Categorys(c *gin.Context) {
-	client, ctx, cancel, err := mongo.Connect("mongodb://mongoadmin:mongoadmin@mongo:27017")
-	if err != nil {
-		panic(err)
-	}
-
-	defer mongo.Close(client, ctx, cancel)
-	filter := bson.D{{}}
-	collection := client.Database("quizzie").Collection("questions")
-	categories, err := collection.Distinct(ctx, "category", filter)
-	if err != nil {
-		panic(err)
-	}
-
-	var catSubCats []CategorySubCategorys
-
-	var catfilter interface{}
-	for _, cat := range categories {
-		catStr := fmt.Sprintf("%v", cat)
-		catfilter = bson.M{"category": catStr}
-		subCatsResp, err := collection.Distinct(ctx, "subcategory", catfilter)
-		if err != nil {
-			panic(err)
-		}
-
-		var subCatsStr []string
-		for _, x := range subCatsResp {
-			subCatsStr = append(subCatsStr, fmt.Sprintf("%v", x))
-		}
-
-		catSubCat := CategorySubCategorys{
-			CategoryName: catStr,
-			SubCategorys: subCatsStr,
-		}
-		catSubCats = append(catSubCats, catSubCat)
-	}
-
-	c.JSON(http.StatusOK, &catSubCats)
+	c.JSON(http.StatusOK, response)
 }
