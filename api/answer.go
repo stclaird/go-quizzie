@@ -13,7 +13,7 @@ import (
 
 //Send Answer
 func Answers(c *gin.Context) {
-	db,err := model.Open("./badger-quizzie")
+	db,err := model.Open("./badger-db")
 	if err != nil {
 		log.Printf("error in func Answers %s", err)
 	}
@@ -38,11 +38,17 @@ func Answers(c *gin.Context) {
 }
 
 //compare the real answer with the user submitted answer
-func checkAnswer(question model.Question, submittedAnswer string) (bool, []string) {
+func checkAnswer(question model.Question, submittedAnswer string) (bool, []model.Answer) {
 	var answers []string
+	var correctAnswers []model.Answer
 
 	for _,v := range question.Answers{
 		if v.IsCorrect == true {
+			correctAnswer := model.Answer{
+				Id : v.Id,
+				Answer: v.Text,
+			}
+			correctAnswers = append(correctAnswers, correctAnswer)
 			answers = append(answers, v.Id)
 		}
 	}
@@ -58,8 +64,8 @@ func checkAnswer(question model.Question, submittedAnswer string) (bool, []strin
 	fmt.Printf("Final: %s,%s", answersStr, submittedAnswerStr)
 
 	if answersStr != submittedAnswerStr {
-		return false, answers
+		return false, correctAnswers
 	}
 
-	return true, answers
+	return true, correctAnswers
 }

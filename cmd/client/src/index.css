@@ -1,0 +1,72 @@
+.questionApp {
+  display: flex;
+  width: 100%;
+  max-width: 90%;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.form-submit-button {
+  background: #49a3ec;
+  color: #fff;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  box-shadow: 5px 5px 5px #eee;
+  text-shadow: none;
+  }
+
+  .form-submit-button:hover {
+  background: #016ABC;
+  color: #fff;
+  border: 1px solid #eee;
+  border-radius: 20px;
+  box-shadow: 5px 5px 5px #eee;
+  text-shadow: none;
+  }
+
+  .form-button-next {
+    float: right;
+    background: #96a1a8;
+    border-radius: 20px;
+  }
+
+  .question {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  .incorrectAnswer {
+    background: #f6e9ca;
+    color: #333;
+    border: 1px solid #c23636;
+    border-radius: 2px;
+    box-shadow: 5px 5px 5px #eee;
+    padding: 5px;
+    margin-bottom:5px
+  }
+  .correctAnswer {
+    background: #c0f9b5;
+    color: #333;
+    border: 1px solid #15993f;
+    border-radius: 2px;
+    box-shadow: 5px 5px 5px #eee;
+    padding: 5px;
+    margin-bottom:5px
+  }
+
+  .qid {
+    color: #ccc;
+    font-size: 0.5;
+    margin-top: 50px;
+  }
+
+  .categories {
+    float: left;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin: 5px;
+  }
+
+  a:link {
+    text-decoration: none;
+  }

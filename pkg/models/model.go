@@ -50,7 +50,12 @@ type Subcategory struct {
 
 type AnswerResponse struct {
 	IsCorrect bool
-	ActualAnswer []string
+	ActualAnswer []Answer
+}
+
+type Answer struct {
+	Id string
+	Answer string
 }
 
 func createQid(question Question, k int) string{
@@ -89,7 +94,6 @@ func InitQuestions() (allQuestions []Question) {
 			}
 		}
 	}
-
 	return allQuestions
 }
 

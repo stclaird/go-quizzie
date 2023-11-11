@@ -11,25 +11,13 @@ import (
 	model "github.com/stclaird/go-quizzie/pkg/models"
 )
 
-type Answer struct {
-	Qid string
-	Answer string
-}
-
-type album struct {
-    ID     string  `json:"id"`
-    Title  string  `json:"title"`
-    Artist string  `json:"artist"`
-    Price  float64 `json:"price"`
-}
-
 func Home(c *gin.Context) {
 	//Home Page
 	c.JSON(http.StatusOK, gin.H{"response": "home"})
 }
 
 func Categories(c *gin.Context) {
-	db,err := model.Open("./badger-quizzie")
+	db,err := model.Open("./badger-db")
 	if err != nil {
 		log.Printf("func Questions %s\n", err)
 	}
@@ -75,7 +63,7 @@ func Categories(c *gin.Context) {
 //Retrieve Questions from specific category "prefix"
 func Questions(c *gin.Context) {
 	prefix := c.Param("prefix")
-	db,err := model.Open("./badger-quizzie")
+	db,err := model.Open("./badger-db")
 	if err != nil {
 		log.Printf("func Questions %s", err)
 	}

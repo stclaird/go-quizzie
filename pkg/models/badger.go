@@ -34,7 +34,6 @@ func InsertOneItem(question Question, db *badger.DB) (err error) {
       log.Println(err)
 	  return err
     }
-    defer db.Close()
 
     err = db.Update(func(txn *badger.Txn) error {
       err := txn.Set([]byte(keyStr), b.Bytes())

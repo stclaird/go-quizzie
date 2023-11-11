@@ -5,7 +5,9 @@ import (
 	"log"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
+
 	"github.com/stclaird/go-quizzie/api"
 	model "github.com/stclaird/go-quizzie/pkg/models"
 )
@@ -13,7 +15,7 @@ import (
 
 func CORSConfig() cors.Config {
     corsConfig := cors.DefaultConfig()
-    corsConfig.AllowOrigins = []string{"http://localhost:3000"}
+    corsConfig.AllowOrigins = []string{"http://localhost:5000"}
     corsConfig.AllowCredentials = true
     corsConfig.AddAllowHeaders("Access-Control-Allow-Headers", "access-control-allow-origin, access-control-allow-headers", "Content-Type", "X-XSRF-TOKEN", "Accept", "Origin", "X-Requested-With", "Authorization")
     corsConfig.AddAllowMethods("GET", "POST", "PUT", "DELETE")
@@ -23,6 +25,9 @@ func CORSConfig() cors.Config {
 
 func setupRouter() *gin.Engine {
 	r := gin.Default()
+
+	r.Use(static.Serve("/", static.LocalFile("./client/build", true)))
+
 	r.Use(cors.New(CORSConfig()))
 
 	// Routes
@@ -37,7 +42,7 @@ func setupRouter() *gin.Engine {
 func main() {
 	// Import questions
 	questions := model.InitQuestions()
-	db,err := model.Open("./badger-quizzie")
+	db,err := model.Open("./badger-db")
 	if err != nil {
 		log.Printf("main %s", err)
 	}
@@ -52,10 +57,10 @@ func main() {
 	model.Close(db)
 
 	// Run the server
-
 	r := setupRouter()
 
+	// Serve frontend static files
 
-	r.Run()
+	r.Run(":5000")
 	fmt.Println("Running")
 }
