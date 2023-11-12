@@ -4,6 +4,7 @@
             "type" : "multichoice",
             "category" : "gcp",
             "subcategory" : "gce",
+            "dateAdded" : "2023-11",
             "answers" : [
                 {
                     "text" : "The default time zone of all VM Instances regardless of region is UTC",
@@ -24,6 +25,7 @@
             "type" : "multichoice",
             "category" : "gcp",
             "subcategory" : "gce",
+            "dateAdded" : "2023-11",
             "answers" : [
                 {
                     "text" : "Copies the startup script to the VM",
@@ -44,10 +46,11 @@
             ]
         },
         {
-            "text" : "Which of the following Metadata keys hold the location of a Linux VM startup script?",
+            "text" : "Which of the following VM Metadata keys hold the location of a Linux VM startup script?",
             "type" : "multichoice",
             "category" : "gcp",
             "subcategory" : "gce",
+            "dateAdded" : "2023-11",
             "answers" : [
                 {
                     "text" : "startup-script-local",
@@ -68,6 +71,7 @@
             "type" : "multichoice",
             "category" : "gcp",
             "subcategory" : "gce",
+            "dateAdded" : "2023-11",
             "answers" : [
                 {
                     "text" : "Inline via the Advanced Options Automation",
@@ -92,6 +96,7 @@
             "type" : "binary",
             "category" : "gcp",
             "subcategory" : "gce",
+            "dateAdded" : "2023-11",
             "answers" : [
                 {
                     "text" : "TRUE",
@@ -108,6 +113,7 @@
             "type" : "multichoice",
             "category" : "gcp",
             "subcategory" : "gce",
+            "dateAdded" : "2023-11",
             "answers" : [
                 {
                     "text" : "Copies the startup script to the VM",

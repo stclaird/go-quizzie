@@ -4,6 +4,7 @@
         "type" : "binary",
         "category" : "gcp",
         "subcategory" : "gce",
+        "dateAdded" : "2023-11",
         "answers" : [
             {
                 "text" : "True",
@@ -16,10 +17,11 @@
         ]
     },
     {
-        "text" : "The folowing are examples of GCP Cloud Load balancers?",
+        "text" : "Which of the following are examples of GCP Cloud Load balancers?",
         "type" : "multichoice",
         "category" : "gcp",
         "subcategory" : "gce",
+        "dateAdded" : "2023-11",
         "answers" : [
             {
                 "text" : "Gateway On Prem LB",

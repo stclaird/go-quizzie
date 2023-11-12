@@ -10,9 +10,10 @@
   background: #49a3ec;
   color: #fff;
   border: 1px solid #eee;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 5px 5px 5px #eee;
   text-shadow: none;
+  padding: 5px
   }
 
   .form-submit-button:hover {
@@ -26,8 +27,8 @@
 
   .form-button-next {
     float: right;
-    background: #96a1a8;
-    border-radius: 20px;
+    background: #eae6be;
+    border-radius: 10px;
   }
 
   .question {
@@ -69,4 +70,8 @@
 
   a:link {
     text-decoration: none;
+  }
+
+  .parentCat {
+    color: #888;
   }

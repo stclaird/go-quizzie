@@ -14,7 +14,7 @@ export default function NextButton(props) {
         disabled={isLast()}
         onClick={() => props.NextQuestion()
        }
-        >Next Question
+        >Next Question &gt;
     </button>
     );
   }

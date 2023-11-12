@@ -76,7 +76,7 @@ func InitQuestions() (allQuestions []Question) {
 		fileExtension := filepath.Ext(File.Name())
 		if fileExtension == ".json" {
 			var questionsObj []Question
-			fmt.Printf("Loading %s", File.Name())
+			fmt.Printf("Loading %s\n", File.Name())
 			filePath := fmt.Sprintf("questions/%s", File.Name())
 			jsonFile, err := os.Open(filePath)
 			if err != nil {

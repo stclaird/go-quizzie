@@ -1,5 +1,5 @@
 import React, {useState, useEffect } from 'react';
-import AnswerCheck from './answer';
+import AnswerCheck from './answerChk';
 import NextButton from './nextButton';
 import SubmitButton from './submitButton';
 
@@ -9,17 +9,18 @@ export default function Questions(props) {
     const [QuestionIdx, setQuestionIdx] = useState(0);
 
     const [PostResponse, setPostResponse ] = useState([]);
-    const [AnswerResp, setAnswerResp] = useState()
+    const [AnswerResp, setAnswerResp] = useState([])
 
     let questionUrl =  "http://localhost:5000/questions/" + props.urlprefix
     let answerURL = "http://localhost:5000/answer/"
-    let title = `${props.name} : ${props.subCatName}`
+    let title = `<span class="parentCat"> ${props.name}</span> : ${props.subCatName}`
 
     //Next Question
     function nextQuestion() {
       let newQuestionidx = QuestionIdx + 1
       setQuestionIdx(newQuestionidx)
       setAnswerResp([])
+      setPostResponse([])
     }
 
     //CheckBox Checked
@@ -60,6 +61,7 @@ export default function Questions(props) {
 
     const submitAnswer = async (qid) => {
       let answer = PostResponse.join('');
+      console.log("submittedAnswer: " + answer)
       let AnswerURL = `${answerURL}${qid}/${answer}`
       try {
         const response = await fetch(AnswerURL, {
@@ -73,12 +75,15 @@ export default function Questions(props) {
       } catch (error) {
         console.error('Error:', error);
       }
+//      setCorrectAnswerCount((prevValue) => prevValue + 1)
     }
 
     const displayAnswers = AnswerResp && AnswerResp.map((answer,idx) =>
-    <div>
+
+   <div>
        { answer.IsCorrect &&
         <div key={idx} className='correctAnswer'>
+
           <p>Correct Answer</p>
         </div>
       }
@@ -137,7 +142,7 @@ export default function Questions(props) {
 
     return (
     <div>
-        <h2 id="list-heading">{title}</h2>
+        <h2 id="list-heading"><span class="parentCat">{props.name} &#92;</span> {props.subCatName}</h2>
         <p>Question: {QuestionIdx + 1} of {NumQuestions}</p>
         <hr></hr>
         {displayQuestion}

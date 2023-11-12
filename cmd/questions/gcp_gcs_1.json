@@ -4,6 +4,7 @@
         "type" : "multichoice",
         "category" : "gcp",
         "subcategory" : "gcs",
+        "dateAdded" : "2023-11",
         "answers" : [
             {
                 "text" : "10 Buckets initially. You will contact support to request additional buckets",
@@ -20,6 +21,7 @@
         "type" : "binary",
         "category" : "gcp",
         "subcategory" : "gcs",
+        "dateAdded" : "2023-11",
         "answers" : [
             {
                 "text" : "A bucket name must be unique within your project.",

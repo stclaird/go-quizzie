@@ -48,6 +48,7 @@ func main() {
 	}
 
 	for _, question := range questions {
+		fmt.Printf("Inserting %s\n", question.Text)
 		err := model.InsertOneItem(question, db)
 		if err != nil {
 			fmt.Println(err)
