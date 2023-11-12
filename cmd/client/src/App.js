@@ -61,7 +61,6 @@ function App(props) {
   return (
   <div className="container">
     <div className="page-header">
-    <h1><a href="/">Questions</a></h1>
     </div>
     <hr></hr>
       {showCategories && categoryList }

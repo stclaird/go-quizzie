@@ -20,7 +20,7 @@
   background: #016ABC;
   color: #fff;
   border: 1px solid #eee;
-  border-radius: 20px;
+  border-radius: 10px;
   box-shadow: 5px 5px 5px #eee;
   text-shadow: none;
   }
@@ -43,7 +43,7 @@
     border-radius: 2px;
     box-shadow: 5px 5px 5px #eee;
     padding: 5px;
-    margin-bottom:5px
+    margin-bottom:15px
   }
   .correctAnswer {
     background: #c0f9b5;
@@ -52,7 +52,7 @@
     border-radius: 2px;
     box-shadow: 5px 5px 5px #eee;
     padding: 5px;
-    margin-bottom:5px
+    margin-bottom: 1cm
   }
 
   .qid {
@@ -74,4 +74,8 @@
 
   .parentCat {
     color: #888;
+  }
+
+  .questionCount {
+    float: right
   }
