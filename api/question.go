@@ -11,10 +11,11 @@ import (
 	model "github.com/stclaird/go-quizzie/pkg/models"
 )
 
-func Home(c *gin.Context) {
-	//Home Page
-	c.JSON(http.StatusOK, gin.H{"response": "home"})
+func Ping(c *gin.Context) {
+	//Health Check
+	c.JSON(http.StatusOK, gin.H{"response": "pong"})
 }
+
 
 func Categories(c *gin.Context) {
 	db,err := model.Open("./badger-db")

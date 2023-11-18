@@ -13,7 +13,6 @@ export default function Questions(props) {
 
     let questionUrl =  "http://localhost:5000/questions/" + props.urlprefix
     let answerURL = "http://localhost:5000/answer/"
-    let title = `<span class="parentCat"> ${props.name}</span> : ${props.subCatName}`
 
     //Next Question
     function nextQuestion() {

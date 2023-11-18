@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os/exec"
-	"runtime"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/static"
@@ -13,7 +11,6 @@ import (
 	"github.com/stclaird/go-quizzie/api"
 	model "github.com/stclaird/go-quizzie/pkg/models"
 )
-
 
 func CORSConfig() cors.Config {
     corsConfig := cors.DefaultConfig()
@@ -24,25 +21,6 @@ func CORSConfig() cors.Config {
     return corsConfig
 }
 
-func openbrowser(url string) {
-	var err error
-
-	switch runtime.GOOS {
-	case "linux":
-		err = exec.Command("xdg-open", url).Start()
-	case "windows":
-		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
-	case "darwin":
-		err = exec.Command("open", url).Start()
-	default:
-		err = fmt.Errorf("unsupported platform")
-	}
-	if err != nil {
-		log.Fatal(err)
-	}
-
-}
-
 func setupRouter() *gin.Engine {
 	r := gin.Default()
 
@@ -51,7 +29,7 @@ func setupRouter() *gin.Engine {
 	r.Use(cors.New(CORSConfig()))
 
 	// Routes
-	r.GET("", api.Home)
+	r.GET("/ping", api.Ping)
 	r.GET("/questions", api.Questions)
 	r.GET("/questions/:prefix", api.Questions)
 	r.GET("/categories", api.Categories)
@@ -81,8 +59,6 @@ func main() {
 	r := setupRouter()
 
 	// Serve frontend static files
-
 	r.Run(":5000")
-	fmt.Println("Running")
-	openbrowser(":5000")
+
 }
