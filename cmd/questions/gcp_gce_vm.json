@@ -132,5 +132,31 @@
                     "iscorrect" : true
                 }
             ]
+        },{
+            "text" : "What are some of the methods used to transfer files to a Google Compute Engine Virtual Machine? ",
+            "type" : "multichoice",
+            "category" : "gcp",
+            "subcategory" : "gce",
+            "dateAdded" : "2023-11",
+            "answers" : [
+                {
+                    "text" : "Using `scp` Command: The `scp` command can be used to copy files between a local host and a remote host or between two remote hosts. Typically, the syntax would look like `scp [OPTION] [user@]host1:[file1] [user@]host2:[file2]`.",
+                    "iscorrect" : true
+                },
+                {
+                    "text" : "Using Bluetooth: Bluetooth is not a suitable method to transfer files to a Google Compute Engine Virtual Machine because Bluetooth's infrastructure doesn't support this type of file transfer to cloud-based servers.",
+                    "iscorrect" : false
+                },
+                {
+                    "text" : "Using FileZilla: FileZilla is a free software, cross-platform FTP application, consisting of FileZilla Client and FileZilla Server, can be used to transfer files to the VM.",
+                    "iscorrect" : true
+                },
+                {
+                    "text" : "Using `gsutil` Command: The `gsutil` command-line tool provides a command-line interface for Cloud Storage. You can use the command `gsutil cp` to copy files from your local machine to the VM.",
+                    "iscorrect" : true
+                }
+            ]
+        },{
+
         }
  ]
